@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-function Navbar({ onLoginClick }) {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+function Navbar() {
+  const [scrolled, setScrolled]       = useState(false);
+  const [menuOpen, setMenuOpen]       = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, openLogin }   = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -14,7 +14,6 @@ function Navbar({ onLoginClick }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fechar dropdown ao clicar fora
   useEffect(() => {
     const handleClick = (e) => {
       if (!e.target.closest('.nav-user')) setDropdownOpen(false);
@@ -31,7 +30,6 @@ function Navbar({ onLoginClick }) {
     setMenuOpen(false);
   };
 
-  // Inicial do nome para o avatar
   const avatarLetter = user?.displayName?.[0]?.toUpperCase()
     ?? user?.email?.[0]?.toUpperCase()
     ?? '?';
@@ -43,9 +41,9 @@ function Navbar({ onLoginClick }) {
       </Link>
 
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-        <a href="/#precos" onClick={handleLinkClick}>Serviços</a>
-        <a href="/#galeria" onClick={handleLinkClick}>Galeria</a>
-        <a href="/#reviews" onClick={handleLinkClick}>Avaliações</a>
+        <a href="/#precos"    onClick={handleLinkClick}>Serviços</a>
+        <a href="/#galeria"   onClick={handleLinkClick}>Galeria</a>
+        <a href="/#reviews"   onClick={handleLinkClick}>Avaliações</a>
         <a href="/#marcacoes" onClick={handleLinkClick}>Marcações</a>
 
         {user ? (
@@ -58,9 +56,7 @@ function Navbar({ onLoginClick }) {
             </button>
             {dropdownOpen && (
               <div className="nav-dropdown">
-                <div className="nav-dropdown-name">
-                  {user.displayName || user.email}
-                </div>
+                <div className="nav-dropdown-name">{user.displayName || user.email}</div>
                 <div className="nav-dropdown-email">{user.email}</div>
                 <hr className="nav-dropdown-divider" />
                 <button onClick={handleLogout}>Terminar sessão</button>
@@ -71,7 +67,7 @@ function Navbar({ onLoginClick }) {
           <a
             href="#"
             className="nav-btn"
-            onClick={(e) => { e.preventDefault(); handleLinkClick(); onLoginClick(); }}
+            onClick={(e) => { e.preventDefault(); handleLinkClick(); openLogin(); }}
           >
             Iniciar Sessão
           </a>
@@ -79,9 +75,7 @@ function Navbar({ onLoginClick }) {
       </div>
 
       <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </nav>
   );

@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Reveal from './Reveal';
+import { useAuth } from '../context/AuthContext';
 
 /* ─── DADOS DOS SERVIÇOS ───
    Para editar preços, nomes ou features, basta alterar este array.
@@ -51,6 +52,18 @@ const services = [
 ];
 
 function PriceCard({ service }) {
+  const navigate = useNavigate();
+  const { user, openLogin } = useAuth();
+
+  const handleAgendar = (e) => {
+    e.preventDefault();
+    if (user) {
+      navigate(`/agendar?servico=${service.id}`);
+    } else {
+      openLogin(`/agendar?servico=${service.id}`);
+    }
+  };
+
   return (
     <Reveal>
       <div className={`price-card ${service.featured ? 'featured' : ''}`}>
@@ -64,8 +77,9 @@ function PriceCard({ service }) {
           ))}
         </ul>
         <a
-          href="#marcacoes"
+          href="#"
           className={`btn-card ${service.featured ? 'red' : 'outline'}`}
+          onClick={handleAgendar}
         >
           Agendar
         </a>

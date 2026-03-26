@@ -8,28 +8,20 @@ import Gallery from './components/Gallery';
 import Reviews from './components/Reviews';
 import Booking from './components/Booking';
 import Footer from './components/Footer';
-import AuthModal from './components/AuthModal';
 import Toast from './components/Toast';
 import ServicosPage from './pages/ServicosPage';
+import AgendarPage from './pages/AgendarPage';
 
-function HomePage({ onLoginClick, showToast }) {
-  const [showAuth, setShowAuth] = useState(false);
-
+function HomePage({ showToast }) {
   return (
     <>
-      <Navbar onLoginClick={() => setShowAuth(true)} />
+      <Navbar />
       <Hero />
       <Pricing />
       <Gallery />
       <Reviews />
       <Booking showToast={showToast} />
       <Footer />
-
-      <AuthModal
-        isOpen={showAuth}
-        onClose={() => setShowAuth(false)}
-        showToast={showToast}
-      />
     </>
   );
 }
@@ -46,8 +38,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<HomePage showToast={showToast} />} />
+          <Route path="/"         element={<HomePage showToast={showToast} />} />
           <Route path="/servicos" element={<ServicosPage />} />
+          <Route path="/agendar"  element={<AgendarPage />} />
         </Routes>
         <Toast message={toast.message} visible={toast.visible} />
       </AuthProvider>

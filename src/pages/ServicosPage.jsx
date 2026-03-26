@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import AuthModal from '../components/AuthModal';
+import { useAuth } from '../context/AuthContext';
 
 /* ─── SERVIÇOS EM DESTAQUE (secção topo) ─── */
 const featuredServices = [
@@ -164,6 +164,15 @@ const serviceGroups = [
 ];
 
 function FeaturedCard({ s }) {
+  const navigate = useNavigate();
+  const { user, openLogin } = useAuth();
+
+  const handleAgendar = (e) => {
+    e.preventDefault();
+    if (user) navigate(`/agendar?servico=${s.id}`);
+    else openLogin(`/agendar?servico=${s.id}`);
+  };
+
   return (
     <div className={`servicos-card ${s.popular ? 'featured' : ''}`}>
       {s.popular && <span className="servicos-badge">Mais Popular</span>}
@@ -181,7 +190,7 @@ function FeaturedCard({ s }) {
           ))}
         </ul>
       )}
-      <a href="/#marcacoes" className={`btn-card ${s.popular ? 'red' : 'outline'}`}>
+      <a href="#" className={`btn-card ${s.popular ? 'red' : 'outline'}`} onClick={handleAgendar}>
         Agendar
       </a>
     </div>
@@ -189,6 +198,15 @@ function FeaturedCard({ s }) {
 }
 
 function GroupRow({ group }) {
+  const navigate = useNavigate();
+  const { user, openLogin } = useAuth();
+
+  const handleAgendar = (e, id) => {
+    e.preventDefault();
+    if (user) navigate(`/agendar?servico=${id}`);
+    else openLogin(`/agendar?servico=${id}`);
+  };
+
   return (
     <div className="servicos-group">
       <h3 className="servicos-group-title">{group.groupName}</h3>
@@ -204,7 +222,7 @@ function GroupRow({ group }) {
               </div>
               <div className="servicos-row-right">
                 <span className="servicos-row-price">{s.price}</span>
-                <a href="/#marcacoes" className="servicos-row-btn">Agendar</a>
+                <a href="#" className="servicos-row-btn" onClick={(e) => handleAgendar(e, s.id)}>Agendar</a>
               </div>
             </div>
             {s.description && (
@@ -225,12 +243,9 @@ function GroupRow({ group }) {
 }
 
 function ServicosPage() {
-  const [showAuth, setShowAuth] = useState(false);
-
   return (
     <div className="servicos-page">
-      <Navbar onLoginClick={() => setShowAuth(true)} />
-      <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} showToast={() => {}} />
+      <Navbar />
 
       <div className="servicos-page-header">
         <span className="label">Serviços & Preços</span>

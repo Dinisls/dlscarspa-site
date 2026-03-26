@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Reveal from './Reveal';
+import { href, Link } from 'react-router-dom';
 
 /* ─── HORÁRIOS DISPONÍVEIS ───
    Edita este array para mudar os horários de agendamento.
@@ -15,7 +16,7 @@ const timeSlots = [
    Atualiza aqui a morada, horário e contacto.
 */
 const companyInfo = [
-  { icon: '📍', title: 'R. Gen. Norton de Matos 115, 1675-024', text: 'Pontinha — Portugal' },
+  { icon: '📍', title: 'R. Gen. Norton de Matos 115, 1675-024', text: 'Pontinha — Portugal', },
   { icon: '🕐', title: 'Horário', text: 'Segunda a Sábado: 09:00 – 18:00' },
   { icon: '📞', title: 'Contacto', text: '+351 932 550 215' },
   { icon: '⏱️', title: 'Confirmação Rápida', text: 'Recebe confirmação em menos de 1 hora' },
