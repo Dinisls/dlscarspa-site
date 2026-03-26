@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Pricing from './components/Pricing';
@@ -43,11 +44,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage showToast={showToast} />} />
-        <Route path="/servicos" element={<ServicosPage />} />
-      </Routes>
-      <Toast message={toast.message} visible={toast.visible} />
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<HomePage showToast={showToast} />} />
+          <Route path="/servicos" element={<ServicosPage />} />
+        </Routes>
+        <Toast message={toast.message} visible={toast.visible} />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

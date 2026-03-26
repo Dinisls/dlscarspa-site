@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  updateProfile,
+} from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 
 function AuthModal({ isOpen, onClose, showToast }) {
   const [mode, setMode] = useState('login'); // 'login' | 'register'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const isLogin = mode === 'login';
 
@@ -22,48 +30,59 @@ function AuthModal({ isOpen, onClose, showToast }) {
       setPassword('');
       setName('');
       setMode('login');
+      setLoading(false);
     }
   }, [isOpen]);
 
-  const handleSubmit = () => {
-    if (!email || !password) {
-      showToast('⚠️ Preencha email e palavra-passe');
-      return;
+  const handleSubmit = async () => {
+    if (!email || !password) { showToast('⚠️ Preencha email e palavra-passe'); return; }
+    if (!email.includes('@') || !email.includes('.')) { showToast('⚠️ Email inválido'); return; }
+    if (password.length < 6) { showToast('⚠️ A palavra-passe deve ter pelo menos 6 caracteres'); return; }
+    if (!isLogin && !name) { showToast('⚠️ Preencha o seu nome'); return; }
+
+    setLoading(true);
+    try {
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, email, password);
+        showToast('✅ Sessão iniciada com sucesso!');
+      } else {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: name });
+        showToast('✅ Conta criada com sucesso!');
+      }
+      onClose();
+    } catch (err) {
+      const msgs = {
+        'auth/email-already-in-use':    '⚠️ Este email já está registado',
+        'auth/user-not-found':          '⚠️ Email não encontrado',
+        'auth/wrong-password':          '⚠️ Palavra-passe incorreta',
+        'auth/invalid-credential':      '⚠️ Email ou palavra-passe incorretos',
+        'auth/too-many-requests':       '⚠️ Muitas tentativas. Tente mais tarde',
+        'auth/network-request-failed':  '⚠️ Erro de ligação. Verifique a internet',
+      };
+      showToast(msgs[err.code] || '⚠️ Ocorreu um erro. Tente novamente');
+    } finally {
+      setLoading(false);
     }
-
-    if (!email.includes('@') || !email.includes('.')) {
-      showToast('⚠️ Por favor insira um email válido');
-      return;
-    }
-
-    if (password.length < 6) {
-      showToast('⚠️ A palavra-passe deve ter pelo menos 6 caracteres');
-      return;
-    }
-
-    if (!isLogin && !name) {
-      showToast('⚠️ Preencha o seu nome');
-      return;
-    }
-
-    // TODO: Integrar com backend (Firebase Auth, Supabase, Auth0)
-    console.log(isLogin ? '🔐 Login:' : '📝 Registo:', { name, email });
-
-    onClose();
-    showToast(isLogin ? '✅ Sessão iniciada com sucesso!' : '✅ Conta criada com sucesso!');
   };
 
-  const handleSocialLogin = (provider) => {
-    const providerName = provider === 'google' ? 'Google' : 'Apple';
-
-    // TODO: Integrar com OAuth
-    // Google: https://developers.google.com/identity
-    // Apple:  https://developer.apple.com/sign-in-with-apple/
-    console.log('🔗 Social login:', providerName);
-
-    onClose();
-    showToast(`✅ Sessão iniciada com ${providerName}!`);
+  const handleSocialLogin = async () => {
+    const providerObj  = googleProvider;
+    const providerName = 'Google';
+    setLoading(true);
+    try {
+      await signInWithPopup(auth, providerObj);
+      showToast(`✅ Sessão iniciada com ${providerName}!`);
+      onClose();
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        showToast(`⚠️ Erro ao entrar com ${providerName}`);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   if (!isOpen) return null;
 
@@ -72,7 +91,7 @@ function AuthModal({ isOpen, onClose, showToast }) {
       <div className="modal">
         <button className="modal-close" onClick={onClose}>✕</button>
 
-        <img src="/images/logo-white.png" alt="DLS Car Spa" className="modal-logo" />
+        <img src="/images/dlsLogo.png" alt="DLS Car Spa" className="modal-logo" />
         <h3>{isLogin ? 'Iniciar Sessão' : 'Criar Conta'}</h3>
         <p className="modal-sub">
           {isLogin ? 'Aceda à sua conta para gerir marcações' : 'Crie a sua conta e comece a marcar'}
@@ -80,7 +99,7 @@ function AuthModal({ isOpen, onClose, showToast }) {
 
         {/* Social buttons */}
         <div className="social-btns">
-          <button className="social-btn" onClick={() => handleSocialLogin('google')}>
+          <button className="social-btn" onClick={() => handleSocialLogin()} disabled={loading}>
             <svg viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -89,12 +108,7 @@ function AuthModal({ isOpen, onClose, showToast }) {
             </svg>
             Continuar com Google
           </button>
-          <button className="social-btn" onClick={() => handleSocialLogin('apple')}>
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-            </svg>
-            Continuar com Apple
-          </button>
+
         </div>
 
         <div className="divider">ou</div>
@@ -112,11 +126,12 @@ function AuthModal({ isOpen, onClose, showToast }) {
         </div>
         <div className="form-group">
           <label>Palavra-passe</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()} />
         </div>
 
-        <button className="btn-submit" onClick={handleSubmit}>
-          {isLogin ? 'Iniciar Sessão' : 'Criar Conta'}
+        <button className="btn-submit" onClick={handleSubmit} disabled={loading}>
+          {loading ? 'A processar...' : isLogin ? 'Iniciar Sessão' : 'Criar Conta'}
         </button>
 
         <div className="modal-switch">

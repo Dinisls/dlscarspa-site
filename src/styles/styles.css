@@ -146,6 +146,97 @@ img {
   box-shadow: 0 4px 16px rgba(196, 30, 42, 0.3);
 }
 
+.nav-user {
+  position: relative;
+}
+
+.nav-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid rgba(196, 30, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.nav-avatar:hover {
+  border-color: var(--red-light);
+}
+
+.nav-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-avatar span {
+  color: var(--white);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  background: var(--navy-mid);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 0.75rem 0;
+  min-width: 200px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 100;
+}
+
+.nav-dropdown-name {
+  padding: 0.25rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-dropdown-email {
+  padding: 0 1rem 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-dropdown-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin: 0;
+}
+
+.nav-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  margin-top: 0.25rem;
+}
+
+.nav-dropdown button:hover {
+  color: var(--red-light);
+  background: rgba(196, 30, 42, 0.06);
+}
+
 .menu-toggle {
   display: none;
   flex-direction: column;

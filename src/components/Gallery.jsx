@@ -9,7 +9,7 @@ import Reveal from './Reveal';
    { type: 'video', src: '/images/gallery/lavagem-completa.mp4', alt: 'Lavagem Completa' }
 */
 const galleryItems = [
-  { type: 'photo', src: null, alt: 'Foto em breve' },
+  { type: 'photo', src:  null, alt: 'Foto em breve' },
   { type: 'photo', src: null, alt: 'Foto em breve' },
   { type: 'video', src: null, alt: 'Vídeo em breve' },
   { type: 'photo', src: null, alt: 'Foto em breve' },
