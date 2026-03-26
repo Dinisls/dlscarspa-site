@@ -1,20 +1,10 @@
 import Reveal from './Reveal';
-
-/* ─── ITENS DA GALERIA ───
-   Para adicionar fotos, coloca as imagens em /public/images/gallery/
-   e atualiza este array com o caminho e tipo.
-
-   Exemplo:
-   { type: 'photo', src: '/images/gallery/bmw-antes-depois.jpg', alt: 'BMW Detalhamento' }
-   { type: 'video', src: '/images/gallery/lavagem-completa.mp4', alt: 'Lavagem Completa' }
-*/
 const galleryItems = [
-  { type: 'photo', src:  null, alt: 'Foto em breve' },
-  { type: 'photo', src: null, alt: 'Foto em breve' },
-  { type: 'video', src: null, alt: 'Vídeo em breve' },
-  { type: 'photo', src: null, alt: 'Foto em breve' },
-  { type: 'photo', src: null, alt: 'Foto em breve' },
-  { type: 'video', src: null, alt: 'Vídeo em breve' },
+  { type: 'photo', src: '/images/Galeria/galeria-1.jpg', alt: 'Trabalho DLS Car Spa' },
+  { type: 'photo', src: '/images/Galeria/galeria-2.jpg', alt: 'Trabalho DLS Car Spa' },
+  { type: 'photo', src: '/images/Galeria/galeria-3.jpg', alt: 'Trabalho DLS Car Spa' },
+  { type: 'photo', src: '/images/Galeria/galeria-4.jpg', alt: 'Trabalho DLS Car Spa' },
+  { type: 'photo', src: '/images/Galeria/galeria-5.jpg', alt: 'Trabalho DLS Car Spa' },
 ];
 
 function GalleryItem({ item }) {
