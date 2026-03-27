@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
@@ -11,6 +12,7 @@ import Footer from './components/Footer';
 import Toast from './components/Toast';
 import ServicosPage from './pages/ServicosPage';
 import AgendarPage from './pages/AgendarPage';
+import AdminPage from './pages/AdminPage';
 
 function HomePage({ showToast }) {
   return (
@@ -20,7 +22,7 @@ function HomePage({ showToast }) {
       <Pricing />
       <Gallery />
       <Reviews />
-      <Booking showToast={showToast} />
+      <Booking />
       <Footer />
     </>
   );
@@ -28,7 +30,6 @@ function HomePage({ showToast }) {
 
 function App() {
   const [toast, setToast] = useState({ message: '', visible: false });
-
   const showToast = (message) => {
     setToast({ message, visible: true });
     setTimeout(() => setToast({ message: '', visible: false }), 3500);
@@ -41,6 +42,7 @@ function App() {
           <Route path="/"         element={<HomePage showToast={showToast} />} />
           <Route path="/servicos" element={<ServicosPage />} />
           <Route path="/agendar"  element={<AgendarPage />} />
+          <Route path="/admin"    element={<AdminPage />} />
         </Routes>
         <Toast message={toast.message} visible={toast.visible} />
       </AuthProvider>

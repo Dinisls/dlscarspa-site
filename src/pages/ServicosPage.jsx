@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 
 /* ─── SERVIÇOS EM DESTAQUE (secção topo) ─── */
@@ -284,6 +285,7 @@ function ServicosPage() {
         </p>
 
       </div>
+      <Footer />
     </div>
   );
 }
